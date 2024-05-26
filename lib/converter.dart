@@ -70,10 +70,8 @@ class Converter {
       'я': 'ya',
     };
 
-    final String result = input
-        .split('')
-        .map((char) => cyrillicToLatinMap[char] ?? ' ')
-        .join('');
+    final String result =
+        input.split('').map((char) => cyrillicToLatinMap[char] ?? ' ').join('');
     return result;
   }
 
@@ -147,8 +145,37 @@ class Converter {
       'yu': 'ю',
       'ya': 'я',
     };
-    final String result =
-        input.split('').map((char) => latinToCyrillicMap[char] ?? ' ').join('');
-    return result;
+    StringBuffer output = StringBuffer();
+    int i = 0;
+
+    while (i < input.length) {
+      // Check for two-character digraphs first
+      if (i + 1 < input.length) {
+        String twoChar = input.substring(i, i + 2);
+        if (latinToCyrillicMap.containsKey(twoChar)) {
+          output.write(latinToCyrillicMap[twoChar]);
+          i += 2;
+          continue;
+        }
+      }
+
+      // Check for single-character mappings
+      String oneChar = input[i];
+      if (latinToCyrillicMap.containsKey(oneChar)) {
+        output.write(latinToCyrillicMap[oneChar]);
+      } else {
+        output.write(oneChar); // If not in map, keep the character as is
+      }
+      i++;
+    }
+
+    return output.toString();
   }
+
+  // String latinToCyrillic(String input) {
+
+  //   final String result =
+  //       input.split('').map((char) => latinToCyrillicMap[char] ?? ' ').join('');
+  //   return result;
+  // }
 }
